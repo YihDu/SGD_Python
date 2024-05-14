@@ -1,0 +1,22 @@
+{   
+    "is_subtyping" : "False",
+
+    "graph_builder" :{
+        "apply_gene_similarity" : "False",
+        "apply_AD_weight" : "False" ,
+        "truth_file_path" : "demo/simulation/data/simulate/Case1 (center_edge)/center_edge(0331)/truth_SpatialData.csv",
+        "pred_file_path" : "demo/simulation/data/simulate/Case1 (center_edge)/center_edge(0331)/edge_SpatialData.csv",
+        "gene_expression_file_path" : "", 
+        "num_neighbors" : 6,
+        "AD_weight" : 0.7
+},
+
+    "graph_analysis" :{
+        "sample_times" : 10
+    },
+
+    "kernel_parameters":{
+        "sigma" : 1e-3
+    }
+
+}
