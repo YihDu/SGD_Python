@@ -37,7 +37,7 @@ def SGD(config_path):
     
     SGD_score = compute_mmd(sample_sets_truth , 
                             sample_sets_pred ,
-                            kernel = gaussian_emd , 
+                            kernel = gaussian_emd_Sinkhorn , 
                             sigma = sigma ,
                             is_hist = True)
     

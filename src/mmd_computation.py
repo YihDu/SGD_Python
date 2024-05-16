@@ -6,8 +6,6 @@ from concurrent.futures import ProcessPoolExecutor
 from GK_emd import *
 import dill as pickle
 
-
-
 def kernel_task(task):
     s1, s2, kernel , sigma  = task
     return kernel(s1, s2 , sigma)
@@ -30,7 +28,6 @@ def disc(samples1 , samples2 , kernel , sigma):
     print(f"Entire Loop took {loop_end_time - loop_start_time:.5f} seconds.") 
     
     return d
-
 
 def compute_mmd(samples1, samples2, kernel, sigma ,is_hist=True):
     if is_hist:

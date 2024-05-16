@@ -74,7 +74,7 @@ class GraphBuilder:
         if self.config.get('apply_gene_similarity' , False):
             gene_expression_data = self.load_data(self.config['graph_builder']['gene_expression_file'])
             self.calculate_gene_similarity(self.truth_G, gene_expression_data)
-            # self.calculate_gene_similarity(self.pred_G, gene_expression_data)
+            self.calculate_gene_similarity(self.pred_G, gene_expression_data)
         
         if self.config.get('apply_AD_weight' , False):
             self.calculate_AD_weight(self.truth_G)

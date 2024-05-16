@@ -3,7 +3,6 @@ import numpy as np
 from sklearn.neighbors import KernelDensity
 from sklearn.model_selection import GridSearchCV
 
-
 class GraphAnalyzer:
     def __init__(self , config , truth_G , pred_G):
         self.config = config
