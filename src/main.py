@@ -6,6 +6,9 @@ from mmd_computation import *
 from GK_emd import gaussian_emd
 from graph_analysis import GraphAnalyzer
 
+# ------------------------------
+import ot
+
 
 def load_config(config_path):
     with open(config_path, 'r') as file:
@@ -33,18 +36,28 @@ def SGD(config_path):
     
     sample_sets_truth , sample_sets_pred = graph_analyzer.analyze_graph()
     
+    
+    
+    
+
     sigma = config['kernel_parameters']['sigma']
     
-    SGD_score = compute_mmd(sample_sets_truth , 
+    SGD_score1 = compute_mmd(sample_sets_truth , 
                             sample_sets_pred ,
-                            kernel = gaussian_emd_Sinkhorn , 
+                            kernel = gaussian_emd, 
+                            sigma = sigma ,
+                            is_hist = True)
+    SGD_score2 = compute_mmd(sample_sets_truth , 
+                            sample_sets_pred ,
+                            kernel = gaussian_emd_Sinkhorn, 
                             sigma = sigma ,
                             is_hist = True)
     
-    print("SGD :" , SGD_score)
+    print("SGD1 :" , SGD_score1)
+    print("SGD2 :" , SGD_score2)
     
-    return SGD_score
-    
+    return SGD_score1
+
     
 # To do: subtyping     
 

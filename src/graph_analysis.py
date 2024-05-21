@@ -71,4 +71,8 @@ class GraphAnalyzer:
         sample_sets_truth = [self.sampling_after_kde(samples_truth , num_samples) for _ in range(sample_times)]
         sample_sets_pred = [self.sampling_after_kde(samples_pred , num_samples) for _ in range(sample_times)]
         
+        # 转成numpy数组
+        # sample_sets_truth = np.array(sample_sets_truth)
+        # sample_sets_pred = np.array(sample_sets_pred)
+        
         return sample_sets_truth , sample_sets_pred

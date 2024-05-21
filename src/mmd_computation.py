@@ -8,19 +8,23 @@ import dill as pickle
 
 def kernel_task(task):
     s1, s2, kernel , sigma  = task
-    return kernel(s1, s2 , sigma)
+    
+    result = kernel(s1, s2, sigma)
+    
+    return result.item()
 
 def disc(samples1 , samples2 , kernel , sigma):
     n = len(samples1)
     m = len(samples2)
-    
     loop_start_time = time.time()
     
     tasks = [(s1 , s2 , kernel, sigma) for s1 in samples1 for s2 in samples2]
     
-    
     with ProcessPoolExecutor() as executor:
         results = list(executor.map(kernel_task , tasks))
+    
+    # 打印出result的每一个元素
+    print(results)
     
     d = sum(results) / (n * m)
     
@@ -39,3 +43,17 @@ def compute_mmd(samples1, samples2, kernel, sigma ,is_hist=True):
             2 * disc(samples1, samples2, kernel , sigma)
             
 
+if __name__ == "__main__":
+    # 生成示例数据
+    array1 = np.random.rand(10, 371, 2)
+    array2 = np.random.rand(10, 371, 2)
+    
+    
+    
+    sigma = 1e-15
+    
+    # 计算MMD
+    mmd1 = compute_mmd(array1, array2, gaussian_emd, sigma)
+    mmd2 = compute_mmd(array1, array2, gaussian_emd_Sinkhorn, sigma)
+    print(f"MMD using kernel1: {mmd1}")
+    print(f"MMD using kernel2: {mmd2}")
