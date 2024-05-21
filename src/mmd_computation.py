@@ -48,9 +48,7 @@ if __name__ == "__main__":
     array1 = np.random.rand(10, 371, 2)
     array2 = np.random.rand(10, 371, 2)
     
-    
-    
-    sigma = 1e-15
+    sigma = 1e-4
     
     # 计算MMD
     mmd1 = compute_mmd(array1, array2, gaussian_emd, sigma)

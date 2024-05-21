@@ -1,0 +1,22 @@
+{   
+    "is_subtyping" : "False",
+
+    "graph_builder" :{
+        "apply_gene_similarity" : "True",
+        "apply_AD_weight" : "False" ,
+        "truth_file_path" : "demo/real data/GeneSimilarity/truth.csv",
+        "pred_file_path" : "demo/real data/GeneSimilarity/pred_dissim.csv",
+        "gene_expression_file_path" : "demo/real data/GeneSimilarity/gene_expression_matrix.csv", 
+        "num_neighbors" : 6,
+        "AD_weight" : 0.7
+},
+
+    "graph_analysis" :{
+        "sample_times" : 10
+    },
+
+    "kernel_parameters":{
+        "sigma" : 1e-4
+    }
+
+}

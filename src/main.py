@@ -35,28 +35,18 @@ def SGD(config_path):
     graph_analyzer = GraphAnalyzer(config , truth_G = truth_graph , pred_G = pred_graph)
     
     sample_sets_truth , sample_sets_pred = graph_analyzer.analyze_graph()
-    
-    
-    
-    
+
 
     sigma = config['kernel_parameters']['sigma']
     
-    SGD_score1 = compute_mmd(sample_sets_truth , 
+    SGD_score = compute_mmd(sample_sets_truth , 
                             sample_sets_pred ,
                             kernel = gaussian_emd, 
                             sigma = sigma ,
                             is_hist = True)
-    SGD_score2 = compute_mmd(sample_sets_truth , 
-                            sample_sets_pred ,
-                            kernel = gaussian_emd_Sinkhorn, 
-                            sigma = sigma ,
-                            is_hist = True)
-    
-    print("SGD1 :" , SGD_score1)
-    print("SGD2 :" , SGD_score2)
-    
-    return SGD_score1
+    print("SGD1 :" , SGD_score)
+
+    return SGD_score
 
     
 # To do: subtyping     
