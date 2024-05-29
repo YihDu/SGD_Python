@@ -23,7 +23,7 @@ def disc(samples1 , samples2 , kernel , sigma , max_workers=3):
     loop_start_time = time.time()
     
     tasks = [(s1 , s2 , kernel, sigma) for s1 in samples1 for s2 in samples2]
-   
+    
     results = []
     if max_workers > 1:
         with ProcessPoolExecutor(max_workers=max_workers) as executor:

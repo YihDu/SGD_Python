@@ -81,5 +81,4 @@ class GraphBuilder:
             
         self.copy_weights(self.truth_G, self.pred_G) 
             
-        
         return self.truth_G , self.pred_G

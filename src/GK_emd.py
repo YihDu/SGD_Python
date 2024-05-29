@@ -14,7 +14,7 @@ def gaussian_emd(x, y ,sigma):
 
     cost_matrix = ot.dist(x, y, metric='euclidean')
     emd = ot.emd2(a, b, cost_matrix , numItermax=1000000000000)
-
+    
     return np.exp(- emd * emd / (2 * sigma * sigma))
 
 def gaussian_euclidean(x, y ,sigma):

@@ -3,6 +3,9 @@ import numpy as np
 from sklearn.neighbors import KernelDensity
 from sklearn.model_selection import GridSearchCV
 import time
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
 class GraphAnalyzer:
     def __init__(self , config , truth_G , pred_G):
@@ -10,11 +13,8 @@ class GraphAnalyzer:
         self.truth_G = truth_G
         self.pred_G = pred_G
     
-    def sampling_after_kde(self, samples, num_samples, bandwidth=0.2, random_seed=42):
-        np.random.seed(random_seed)
-        
-        total_start_time = time.time()
-        
+    def fit_kde_and_sample(self, samples, num_samples , sample_times , bandwidth=0.1, random_seed=42):
+
         # KDE 拟合开始计时
         fit_start_time = time.time()
         
@@ -29,17 +29,49 @@ class GraphAnalyzer:
         # 抽样开始计时
         sample_start_time = time.time()
         
-        sample_sets = kde.sample(num_samples)  # random samples
+        samples_set = []
+        
+        for i in range(sample_times):  
+            sampled = kde.sample(num_samples , random_state=random_seed + i)  
+            sampled = np.clip(sampled, 0, 1)       
+            samples_set.append(sampled)
         
         # 打印抽样的时间
         sample_end_time = time.time()
         print(f"Sampling took {sample_end_time - sample_start_time:.2f} seconds.")
+    
+        self.plot_marginal_distributions(samples, samples_set)
         
-        # 打印总时间
-        total_end_time = time.time()
-        print(f"Total process took {total_end_time - total_start_time:.2f} seconds.")
+        return samples_set
+    
+    def plot_marginal_distributions(self, original_samples, samples_set):
+        num_dimensions = original_samples.shape[1]
+        fig, axes = plt.subplots(num_dimensions, 2, figsize=(16, 6 * num_dimensions))
         
-        return sample_sets
+        for i in range(num_dimensions):
+            # 原始样本的边缘分布和 KDE 图
+            ax_kde = axes[i, 0] if num_dimensions > 1 else axes[0]
+            sns.histplot(original_samples[:, i], bins=30, kde=False, label='Original Histogram', color='blue', alpha=0.5, ax=ax_kde)
+            sns.kdeplot(original_samples[:, i], fill=True, label='Original KDE', color='blue', ax=ax_kde)
+            ax_kde.set_title(f'KDE and Histogram of Dimension {i+1}')
+            ax_kde.set_xlabel(f'Dimension {i+1}')
+            ax_kde.set_ylabel('Density')
+            ax_kde.legend()
+            
+            # 每次抽样的柱状图
+            ax_hist = axes[i, 1] if num_dimensions > 1 else axes[1]
+            for j, samples in enumerate(samples_set):
+                sns.histplot(samples[:, i], bins=30, kde=False, alpha=0.3, label=f'Sample {j+1}', ax=ax_hist)
+            ax_hist.set_title(f'Sampled Histograms of Dimension {i+1}')
+            ax_hist.set_xlabel(f'Dimension {i+1}')
+            ax_hist.set_ylabel('Density')
+            
+            
+            if i == 0:
+                ax_hist.legend()
+        
+        plt.tight_layout()
+        plt.show()
     '''
     def sampling_after_kde( self, samples , num_samples , bandwidths = np.linspace(0.1 , 1.0 , 10) , random_seed = 42):
         np.random.seed(random_seed)
@@ -109,10 +141,8 @@ class GraphAnalyzer:
                 
             samples.append(encoding)
         
-            
         return np.array(samples)
-            
-            
+               
         
     def analyze_graph(self):
         
@@ -127,12 +157,23 @@ class GraphAnalyzer:
         samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_AD_weight)
         samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_AD_weight)
 
+
         # 打印 get_edge_attributes 的时间
         print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
 
-        sample_sets_truth = [self.sampling_after_kde(samples_truth , num_samples) for _ in range(sample_times)]
-        sample_sets_pred = [self.sampling_after_kde(samples_pred , num_samples) for _ in range(sample_times)]
+        samples_set_truth = self.fit_kde_and_sample(samples_truth, num_samples , sample_times , bandwidth=0.2, random_seed=42)
+        samples_set_pred = self.fit_kde_and_sample(samples_pred, num_samples , sample_times , bandwidth=0.2, random_seed=42)
         
+        # for i in range(sample_times):
+        #     print(f"truth Sample set {i}:")
+        #     print("sample_sets_truth: ", samples_set_truth[i])
+        #     print("---------------------------")
+        
+        # for i in range(sample_times):
+        #     print(f"pred Sample set {i}:")
+        #     print("sample_sets_pred: ", samples_set_pred[i])
+        #     print("---------------------------")
+    
         # 打印
         print(f"Sampling took {time.time() - graph_building_time:.2f} seconds.")
         
@@ -140,4 +181,4 @@ class GraphAnalyzer:
         # sample_sets_truth = np.array(sample_sets_truth)
         # sample_sets_pred = np.array(sample_sets_pred)
         
-        return sample_sets_truth , sample_sets_pred
+        return samples_set_truth , samples_set_pred

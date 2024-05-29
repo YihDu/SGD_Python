@@ -5,10 +5,8 @@ import time
 from mmd_computation import *
 from GK_emd import gaussian_emd
 from graph_analysis import GraphAnalyzer
-
 # ------------------------------
 import ot
-
 
 def load_config(config_path):
     with open(config_path, 'r') as file:
