@@ -27,20 +27,16 @@ def compute_clustering_metrics(config):
     PAS = compute_PAS(cluster_labels, coords)
     
     metrics_data = {
-        'External': {
             'Adjusted Rand Index (ARI)': ari,
             'Normalized Mutual Information (NMI)': nmi,
             'Jaccard Index': jaccard,
-            'Fowlkes-Mallows Index (FMI)': fmi
-        },
-        'Internal': {
+            'Fowlkes-Mallows Index (FMI)': fmi,
             'Silhouette Coefficient': silhouette,
             'CHAOS': chaos,
             'PAS' : PAS
         }
-    }
     
-    metrics_df = pd.DataFrame(metrics_data)
+    metrics_df = pd.DataFrame(metrics_data , index=[1])
     
     print(metrics_df)
     

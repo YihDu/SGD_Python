@@ -51,8 +51,9 @@ def gaussian_emd_Sinkhorn(x , y , sigma):
 
 if __name__ == "__main__":
     # 生成示例数据
-    x = np.random.rand(11000, 7)
-    y = np.random.rand(11000, 7)
+    np.random.seed(0)
+    x = np.random.rand(1000 , 4)
+    y = np.random.rand(1000 , 4)
     
     print(x)
     print(y)
@@ -70,8 +71,10 @@ if __name__ == "__main__":
     print("Gaussian EMD (classical):", result_classical)
 
 
-    result_sinkhorn = gaussian_emd_Sinkhorn(x, y, sigma)
+    # result_sinkhorn = gaussian_emd_Sinkhorn(x, y, sigma)
     
-    time2 = time.time()
-    print(f"Time taken for Sinkhorn: {time2 - time1:.5f} seconds.")
-    print("Gaussian EMD (Sinkhorn):", result_sinkhorn)
+    # time2 = time.time()
+    # print(f"Time taken for Sinkhorn: {time2 - time1:.5f} seconds.")
+    # print("Gaussian EMD (Sinkhorn):", result_sinkhorn)
+    
+    

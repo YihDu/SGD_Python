@@ -32,7 +32,7 @@ class GraphAnalyzer:
         samples_set = []
         
         for i in range(sample_times):  
-            sampled = kde.sample(num_samples , random_state=random_seed + i)  
+            sampled = kde.sample(num_samples ,random_state=random_seed + i)  
             sampled = np.clip(sampled, 0, 1)       
             samples_set.append(sampled)
         
@@ -164,15 +164,15 @@ class GraphAnalyzer:
         samples_set_truth = self.fit_kde_and_sample(samples_truth, num_samples , sample_times , bandwidth=0.2, random_seed=42)
         samples_set_pred = self.fit_kde_and_sample(samples_pred, num_samples , sample_times , bandwidth=0.2, random_seed=42)
         
-        # for i in range(sample_times):
-        #     print(f"truth Sample set {i}:")
-        #     print("sample_sets_truth: ", samples_set_truth[i])
-        #     print("---------------------------")
+        for i in range(sample_times):
+            print(f"truth Sample set {i}:")
+            print("sample_sets_truth: ", samples_set_truth[i])
+            print("---------------------------")
         
-        # for i in range(sample_times):
-        #     print(f"pred Sample set {i}:")
-        #     print("sample_sets_pred: ", samples_set_pred[i])
-        #     print("---------------------------")
+        for i in range(sample_times):
+            print(f"pred Sample set {i}:")
+            print("sample_sets_pred: ", samples_set_pred[i])
+            print("---------------------------")
     
         # 打印
         print(f"Sampling took {time.time() - graph_building_time:.2f} seconds.")
