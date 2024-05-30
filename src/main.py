@@ -5,8 +5,8 @@ import time
 from mmd_computation import *
 from GK_emd import gaussian_emd
 from graph_analysis import GraphAnalyzer
-# ------------------------------
-import ot
+import clustering_metrics
+
 
 def load_config(config_path):
     with open(config_path, 'r') as file:
@@ -42,25 +42,20 @@ def SGD(config_path):
 
     sigma = config['kernel_parameters']['sigma']
     
-    SGD_score1 = compute_mmd(sample_sets_truth , 
+    SGD_score = compute_mmd(sample_sets_truth , 
                              sample_sets_pred ,
                              kernel = gaussian_emd, 
                              sigma = sigma ,
                              is_hist = True)
-    #SGD_score2 = compute_mmd(sample_sets_truth , 
-    #                    sample_sets_pred ,
-    #                    kernel = gaussian_emd_Sinkhorn, 
-    #                    sigma = sigma ,
-    #                    is_hist = True)
-    # 
-    print("SGD1 :" , SGD_score1)
-    # print("SGD2 :" , SGD_score2)
+    print("SGD :" , SGD_score)
+    return SGD_score
 
-    return SGD_score1
 
-    
 # To do: subtyping     
 
 if __name__ == "__main__":
     config_path = sys.argv[1] if len(sys.argv) > 1 else 'config.json'
     SGD(config_path)
+    
+    config = load_config(config_path)
+    clustering_metrics.compute_clustering_metrics(config)
