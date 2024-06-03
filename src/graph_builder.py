@@ -31,7 +31,7 @@ class GraphBuilder:
                 graph.add_edge(i , n)
         return graph
 
-    ## To do Gene Similarity计算方式选择    
+    ## To do : calculate Gene Similarity with 2 vector 
     def calculate_gene_similarity(self, graph, gene_expression_data):
         expression_matrix = gene_expression_data.values.astype(float)
         normalized_data = (expression_matrix - np.mean(expression_matrix, axis=1, keepdims=True)) / \
@@ -41,7 +41,7 @@ class GraphBuilder:
         for u, v in graph.edges():
             graph.edges[u, v]['gene_similarity_weight'] = 1 - pearson_matrix[u, v]
         
-    # To do (实际算法???)
+    # To do (a hyperparameter)
     def calculate_AD_weight(self , graph):
         for edge in graph.edges():
             u , v = edge
@@ -51,6 +51,7 @@ class GraphBuilder:
                 graph[u][v]['ad_weight'] = 0.4
             else:
                 graph[u][v]['ad_weight'] = 1
+
     
     def copy_weights(self, truth_graph, pred_graph):
         for u, v in truth_graph.edges():
@@ -68,13 +69,14 @@ class GraphBuilder:
         self.truth_G = self.build_graph(truth_data)
         self.pred_G = self.build_graph(pred_data)
         
-        if self.config.get('apply_gene_similarity' , False):
+        if self.config['graph_builder']['apply_gene_similarity']:
             gene_expression_data = self.load_data(self.config['graph_builder']['gene_expression_file'])
             self.calculate_gene_similarity(self.truth_G, gene_expression_data)
             self.calculate_gene_similarity(self.pred_G, gene_expression_data)
         
-        if self.config.get('apply_AD_weight' , False):
+        if self.config['graph_builder']['apply_AD_weight']:
             self.calculate_AD_weight(self.truth_G)
+        
             
         self.copy_weights(self.truth_G, self.pred_G) 
     

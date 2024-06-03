@@ -2,8 +2,8 @@
     "is_subtyping" : "False",
 
     "graph_builder" :{
-        "apply_gene_similarity" : "False",
-        "apply_AD_weight" : "True" ,
+        "apply_gene_similarity" : false,
+        "apply_AD_weight" : true ,
         "truth_file_path" : "demo/real data/FPFN(0512)/Truth_merged.csv",
         "pred_file_path" : "demo/real data/FPFN(0512)/FN_merged.csv",
         "gene_expression_file_path" : "", 

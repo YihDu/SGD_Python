@@ -14,19 +14,16 @@ class GraphAnalyzer:
         self.pred_G = pred_G
     
     def fit_kde_and_sample(self, samples, num_samples , sample_times , bandwidth=0.2, random_seed=42):
-
-        # KDE 拟合开始计时
+        
         fit_start_time = time.time()
         
         kde = KernelDensity(kernel='gaussian', bandwidth=bandwidth)
         
         kde.fit(samples)
         
-        # 打印拟合的时间
         fit_end_time = time.time()
         print(f"KDE fitting took {fit_end_time - fit_start_time:.2f} seconds.")
         
-        # 抽样开始计时
         sample_start_time = time.time()
         
         samples_set = []
@@ -36,7 +33,6 @@ class GraphAnalyzer:
             sampled = np.clip(sampled, 0, 1)       
             samples_set.append(sampled)
         
-        # 打印抽样的时间
         sample_end_time = time.time()
         print(f"Sampling took {sample_end_time - sample_start_time:.2f} seconds.")
     
@@ -49,7 +45,7 @@ class GraphAnalyzer:
         fig, axes = plt.subplots(num_dimensions, 2, figsize=(16, 6 * num_dimensions))
         
         for i in range(num_dimensions):
-            # 原始样本的边缘分布和 KDE 图
+            # original
             ax_kde = axes[i, 0] if num_dimensions > 1 else axes[0]
             sns.histplot(original_samples[:, i], bins=30, kde=False, label='Original Histogram', color='blue', alpha=0.5, ax=ax_kde)
             sns.kdeplot(original_samples[:, i], fill=True, label='Original KDE', color='blue', ax=ax_kde)
@@ -58,7 +54,7 @@ class GraphAnalyzer:
             ax_kde.set_ylabel('Density')
             ax_kde.legend()
             
-            # 每次抽样的柱状图
+            # sample
             ax_hist = axes[i, 1] if num_dimensions > 1 else axes[1]
             for j, samples in enumerate(samples_set):
                 sns.histplot(samples[:, i], bins=30, kde=False, alpha=0.3, label=f'Sample {j+1}', ax=ax_hist)
@@ -111,31 +107,29 @@ class GraphAnalyzer:
        '''     
      
     
-    def get_edge_attributes(self , graph , apply_gene_similarity, apply_AD_weight):
-        unique_groups = sorted(set(node_data['group'] for _ , node_data in graph.nodes(data = True)))
+    def get_edge_attributes(self, graph, apply_gene_similarity, apply_AD_weight):
+        unique_groups = sorted(set(node_data['group'] for _, node_data in graph.nodes(data=True)))
+        print("Unique groups:", unique_groups)
         
-        group_to_onehot = {}
+        group_to_onehot = {group: np.array([1 if i == group else 0 for i in unique_groups], dtype=np.float64) for group in unique_groups}
         
-        for group in unique_groups:
-            group_to_onehot[group] = np.array([1 if i == group else 0 for i in unique_groups])
-        
-        samples = []    
+        samples = []
         
         for u, v in graph.edges():
             group_u = graph.nodes[u]['group']
             group_v = graph.nodes[v]['group']
             
-            encoding = np.zeros(len(unique_groups))
-            
             if group_u == group_v:
-                encoding = group_to_onehot[group_u]
-
+                encoding = group_to_onehot[group_u].copy()
+            else:
+                encoding = np.zeros(len(unique_groups), dtype=np.float64)
+            
             if apply_gene_similarity:
-                gene_similarity_weight = graph[u][v].get('gene_similarity_weight', 1)
+                gene_similarity_weight = graph[u][v].get('gene_similarity_weight', 1.0)
                 encoding *= gene_similarity_weight
 
             if apply_AD_weight:
-                ad_weight = graph[u][v].get('ad_weight', 1)
+                ad_weight = graph[u][v].get('ad_weight', 1.0)
                 encoding *= ad_weight
                 
             samples.append(encoding)
@@ -156,10 +150,9 @@ class GraphAnalyzer:
         samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_AD_weight)
         samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_AD_weight)
         
-        # 打印 get_edge_attributes 的时间
         print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
 
-        samples_set_truth = self.fit_kde_and_sample(samples_truth, num_samples , sample_times , bandwidth=0.1, random_seed=42)
-        samples_set_pred = self.fit_kde_and_sample(samples_pred, num_samples , sample_times , bandwidth=0.1, random_seed=42)
+        samples_set_truth = self.fit_kde_and_sample(samples_truth, num_samples , sample_times , bandwidth=0.4, random_seed=42)
+        samples_set_pred = self.fit_kde_and_sample(samples_pred, num_samples , sample_times , bandwidth=0.4, random_seed=42)
         
         return samples_set_truth , samples_set_pred
