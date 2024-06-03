@@ -12,7 +12,7 @@
 },
 
     "graph_analysis" :{
-        "sample_times" : 10
+        "sample_times" : 20
     },
 
     "kernel_parameters":{

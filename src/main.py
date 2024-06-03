@@ -12,11 +12,6 @@ def load_config(config_path):
         config = json.load(file)
     return config
 
-def flatten_samples(samples):
-    # 将每个样本平坦化成一维数组
-    flattened = [sample.flatten() for sample in samples]
-    return pd.DataFrame(flattened)
-
 # NOT subtyping
 
 def SGD(config_path):

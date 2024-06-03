@@ -13,7 +13,7 @@ class GraphAnalyzer:
         self.truth_G = truth_G
         self.pred_G = pred_G
     
-    def fit_kde_and_sample(self, samples, num_samples , sample_times , bandwidth=0.1, random_seed=42):
+    def fit_kde_and_sample(self, samples, num_samples , sample_times , bandwidth=0.2, random_seed=42):
 
         # KDE 拟合开始计时
         fit_start_time = time.time()
@@ -159,24 +159,7 @@ class GraphAnalyzer:
         # 打印 get_edge_attributes 的时间
         print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
 
-        samples_set_truth = self.fit_kde_and_sample(samples_truth, num_samples , sample_times , bandwidth=0.2, random_seed=42)
-        samples_set_pred = self.fit_kde_and_sample(samples_pred, num_samples , sample_times , bandwidth=0.2, random_seed=42)
-        
-        for i in range(sample_times):
-            print(f"truth Sample set {i}:")
-            print("sample_sets_truth: ", samples_set_truth[i])
-            print("---------------------------")
-        
-        for i in range(sample_times):
-            print(f"pred Sample set {i}:")
-            print("sample_sets_pred: ", samples_set_pred[i])
-            print("---------------------------")
-    
-        # 打印
-        print(f"Sampling took {time.time() - graph_building_time:.2f} seconds.")
-        
-        # 转成numpy数组
-        # sample_sets_truth = np.array(sample_sets_truth)
-        # sample_sets_pred = np.array(sample_sets_pred)
+        samples_set_truth = self.fit_kde_and_sample(samples_truth, num_samples , sample_times , bandwidth=0.1, random_seed=42)
+        samples_set_pred = self.fit_kde_and_sample(samples_pred, num_samples , sample_times , bandwidth=0.1, random_seed=42)
         
         return samples_set_truth , samples_set_pred
