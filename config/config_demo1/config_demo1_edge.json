@@ -16,7 +16,7 @@
     },
 
     "kernel_parameters":{
-        "sigma" : 1e-9
+        "sigma" : 1e-4
     }
 
 }

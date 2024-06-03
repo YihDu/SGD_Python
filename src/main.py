@@ -7,12 +7,15 @@ from GK_emd import gaussian_emd
 from graph_analysis import GraphAnalyzer
 import clustering_metrics
 
-
 def load_config(config_path):
     with open(config_path, 'r') as file:
         config = json.load(file)
     return config
 
+def flatten_samples(samples):
+    # 将每个样本平坦化成一维数组
+    flattened = [sample.flatten() for sample in samples]
+    return pd.DataFrame(flattened)
 
 # NOT subtyping
 
@@ -30,7 +33,9 @@ def SGD(config_path):
     
     print(f"Graph Building took {graph_building_time - start_time:.2f} seconds.")
     
-    graph_analyzer = GraphAnalyzer(config , truth_G = truth_graph , pred_G = pred_graph)
+    graph_analyzer = GraphAnalyzer(config , 
+                                   truth_G = truth_graph , 
+                                   pred_G = pred_graph)
     
     sample_sets_truth , sample_sets_pred = graph_analyzer.analyze_graph()
     

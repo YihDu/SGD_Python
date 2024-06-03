@@ -40,7 +40,7 @@ class GraphAnalyzer:
         sample_end_time = time.time()
         print(f"Sampling took {sample_end_time - sample_start_time:.2f} seconds.")
     
-        self.plot_marginal_distributions(samples, samples_set)
+        # self.plot_marginal_distributions(samples, samples_set)
         
         return samples_set
     
@@ -112,13 +112,12 @@ class GraphAnalyzer:
      
     
     def get_edge_attributes(self , graph , apply_gene_similarity, apply_AD_weight):
-        unique_groups = set(node_data['group'] for _ , node_data in graph.nodes(data = True))
+        unique_groups = sorted(set(node_data['group'] for _ , node_data in graph.nodes(data = True)))
         
         group_to_onehot = {}
         
         for group in unique_groups:
             group_to_onehot[group] = np.array([1 if i == group else 0 for i in unique_groups])
-        
         
         samples = []    
         
@@ -156,8 +155,7 @@ class GraphAnalyzer:
         
         samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_AD_weight)
         samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_AD_weight)
-
-
+        
         # 打印 get_edge_attributes 的时间
         print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
 

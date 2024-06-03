@@ -14,9 +14,7 @@ class GraphBuilder:
     
     def build_graph(self , coordinate_data):
         graph = nx.Graph()
-        
         pos = {}
-        
         for idx, row in coordinate_data.iterrows():
             graph.add_node(idx, group=row['group'])
             pos[idx] = (row['x'], row['y'])
@@ -27,13 +25,12 @@ class GraphBuilder:
         nbrs.fit(pos_array)
         _ , indices = nbrs.kneighbors(pos_array)
         
-        
         # build KNN graph
         for i , neighbors in enumerate(indices):
             for n in neighbors[1:]:
                 graph.add_edge(i , n)
         return graph
-      
+
     ## To do Gene Similarity计算方式选择    
     def calculate_gene_similarity(self, graph, gene_expression_data):
         expression_matrix = gene_expression_data.values.astype(float)
@@ -80,5 +77,5 @@ class GraphBuilder:
             self.calculate_AD_weight(self.truth_G)
             
         self.copy_weights(self.truth_G, self.pred_G) 
-            
+    
         return self.truth_G , self.pred_G
