@@ -1,11 +1,10 @@
 import numpy as np
 import ot
 import torch
-import torch.nn as nn
 import sinkhorn_pointcloud as spc
 import time
-## POT - Wasserstein Distance
 
+## POT - Wasserstein Distance
 def gaussian_emd(x, y ,sigma):
     n = len(x)
     m = len(y)
@@ -25,6 +24,7 @@ def gaussian_euclidean(x, y ,sigma):
     euclidean_distance = np.linalg.norm(x - y)
     
     return np.exp(- euclidean_distance * euclidean_distance / (2 * sigma * sigma))
+
 
 ## PyTorch Sinkhorn to calculate Wasserstein distance
 

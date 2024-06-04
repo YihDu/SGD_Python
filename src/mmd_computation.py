@@ -43,39 +43,7 @@ def disc(samples1 , samples2 , kernel , sigma , max_workers=3):
     print(f"Entire Loop took {loop_end_time - loop_start_time:.5f} seconds.") 
     
     return d
-'''
-def kernel_task(s1, s2, kernel, sigma):
-    return kernel(s1, s2, sigma).item()
 
-def disc(samples1, samples2, kernel, sigma):
-    n = len(samples1)
-    m = len(samples2)
-    loop_start_time = time.time()
-    
-    results = []
-    for s1 in samples1:
-        for s2 in samples2:
-            # 开始计算第i次
-            time_start = time.time()
-            result = kernel_task(s1, s2, kernel, sigma)
-            
-            # 结束计算第i次
-            time_end = time.time()
-            
-            print(f"Time taken for one iteration: {time_end - time_start:.5f} seconds.")
-            
-            results.append(result)
-    
-    # 打印出result的每一个元素
-    print(results)
-    
-    d = sum(results) / (n * m)
-    
-    loop_end_time = time.time()
-    print(f"Entire Loop took {loop_end_time - loop_start_time:.5f} seconds.") 
-    
-    return d
-'''
 
 def compute_mmd(samples1, samples2, kernel, sigma ,is_hist=True):
     if is_hist:
