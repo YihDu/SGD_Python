@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import sinkhorn_pointcloud as spc
 import time
-## POT库实现Wasserstein距离
+## POT - Wasserstein Distance
 
 def gaussian_emd(x, y ,sigma):
     n = len(x)
@@ -26,7 +26,7 @@ def gaussian_euclidean(x, y ,sigma):
     
     return np.exp(- euclidean_distance * euclidean_distance / (2 * sigma * sigma))
 
-## PyTorch Sinkhorn迭代算法 实现Wasserstein距离
+## PyTorch Sinkhorn to calculate Wasserstein distance
 
 def gaussian_emd_Sinkhorn(x , y , sigma):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -50,7 +50,7 @@ def gaussian_emd_Sinkhorn(x , y , sigma):
 
 
 if __name__ == "__main__":
-    # 生成示例数据
+    # for test
     np.random.seed(0)
     x = np.random.rand(1000 , 4)
     y = np.random.rand(1000 , 4)

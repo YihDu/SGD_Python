@@ -33,13 +33,22 @@ class GraphBuilder:
 
     ## To do : calculate Gene Similarity with 2 vector 
     def calculate_gene_similarity(self, graph, gene_expression_data):
-        expression_matrix = gene_expression_data.values.astype(float)
+        expression_matrix = gene_expression_data.iloc[:, 1:].values.astype(float)
+        
         normalized_data = (expression_matrix - np.mean(expression_matrix, axis=1, keepdims=True)) / \
-                            np.std(expression_matrix, axis=1, keepdims=True)
+                        np.std(expression_matrix, axis=1, keepdims=True)
+        
         pearson_matrix = np.corrcoef(normalized_data)
-
+        
+        nodes = list(graph.nodes())
+        if len(nodes) != pearson_matrix.shape[0]:
+            raise ValueError("节点数与基因表达数据的大小不匹配")
+        
         for u, v in graph.edges():
-            graph.edges[u, v]['gene_similarity_weight'] = 1 - pearson_matrix[u, v]
+            if u < len(nodes) and v < len(nodes):
+                graph.edges[u, v]['gene_similarity_weight'] = 1 - pearson_matrix[u, v]
+            else:
+                raise IndexError(f"节点索引超出范围：u={u}, v={v}, 矩阵大小={pearson_matrix.shape}")
         
     # To do (a hyperparameter)
     def calculate_AD_weight(self , graph):
@@ -70,7 +79,7 @@ class GraphBuilder:
         self.pred_G = self.build_graph(pred_data)
         
         if self.config['graph_builder']['apply_gene_similarity']:
-            gene_expression_data = self.load_data(self.config['graph_builder']['gene_expression_file'])
+            gene_expression_data = self.load_data(self.config['graph_builder']['gene_expression_file_path'])
             self.calculate_gene_similarity(self.truth_G, gene_expression_data)
             self.calculate_gene_similarity(self.pred_G, gene_expression_data)
         

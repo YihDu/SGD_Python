@@ -125,8 +125,11 @@ class GraphAnalyzer:
                 encoding = np.zeros(len(unique_groups), dtype=np.float64)
             
             if apply_gene_similarity:
+                print("使用了gene weight")
                 gene_similarity_weight = graph[u][v].get('gene_similarity_weight', 1.0)
+                print("这条边的gene similarity weight是：" , gene_similarity_weight)
                 encoding *= gene_similarity_weight
+                print("这条边的encoding是:" , encoding)
 
             if apply_AD_weight:
                 ad_weight = graph[u][v].get('ad_weight', 1.0)
