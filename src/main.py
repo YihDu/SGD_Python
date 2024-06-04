@@ -12,8 +12,6 @@ def load_config(config_path):
         config = json.load(file)
     return config
 
-# NOT subtyping
-
 def SGD(config_path):
     
     config = load_config(config_path)
@@ -42,16 +40,30 @@ def SGD(config_path):
 
     sigma = config['kernel_parameters']['sigma']
     
-    SGD_score = compute_mmd(sample_sets_truth , 
-                             sample_sets_pred ,
-                             kernel = gaussian_emd, 
-                             sigma = sigma ,
-                             is_hist = True)
-    print("SGD :" , SGD_score)
-    return SGD_score
+    is_multi = config['is_multi']
 
-
-# To do: subtyping     
+    if not is_multi:
+        SGD_score = compute_mmd(sample_sets_truth , 
+                                sample_sets_pred ,
+                                kernel = gaussian_emd, 
+                                sigma = sigma ,
+                                is_hist = True)
+        print("SGD :" , SGD_score)
+        return SGD_score
+    
+    else:
+        SGD_scores = {}
+        for group in sample_sets_truth.keys():
+            SGD_scores[group] = compute_mmd(sample_sets_truth[group] , 
+                                sample_sets_pred[group] ,
+                                kernel = gaussian_emd, 
+                                sigma = sigma ,
+                                is_hist = True)
+        
+        for group, score in SGD_scores.items():
+            print(f"SGD for group {group} :", score)
+        return SGD_scores
+ 
 
 if __name__ == "__main__":
     config_path = sys.argv[1] if len(sys.argv) > 1 else 'config.json'

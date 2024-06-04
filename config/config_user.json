@@ -1,5 +1,5 @@
 {   
-    "is_subtyping" : "False",
+    "is_multi" : false,
 
     "graph_builder" :{
         "truth_file_path" : "./data/truth.csv",

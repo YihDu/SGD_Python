@@ -107,13 +107,18 @@ class GraphAnalyzer:
        '''     
      
     
-    def get_edge_attributes(self, graph, apply_gene_similarity, apply_AD_weight):
+    def get_edge_attributes(self, graph, apply_gene_similarity, apply_AD_weight , is_multi = False):
         unique_groups = sorted(set(node_data['group'] for _, node_data in graph.nodes(data=True)))
         print("Unique groups:", unique_groups)
-        
         group_to_onehot = {group: np.array([1 if i == group else 0 for i in unique_groups], dtype=np.float64) for group in unique_groups}
         
-        samples = []
+        
+        
+        if is_multi:
+            samples = {group : [] for group in unique_groups}
+        
+        else:
+            samples = []
         
         for u, v in graph.edges():
             group_u = graph.nodes[u]['group']
@@ -125,20 +130,26 @@ class GraphAnalyzer:
                 encoding = np.zeros(len(unique_groups), dtype=np.float64)
             
             if apply_gene_similarity:
-                print("使用了gene weight")
                 gene_similarity_weight = graph[u][v].get('gene_similarity_weight', 1.0)
-                print("这条边的gene similarity weight是：" , gene_similarity_weight)
                 encoding *= gene_similarity_weight
-                print("这条边的encoding是:" , encoding)
 
             if apply_AD_weight:
                 ad_weight = graph[u][v].get('ad_weight', 1.0)
                 encoding *= ad_weight
-                
-            samples.append(encoding)
+            
+            if is_multi:
+                samples[group_u].append(encoding)
+                if group_u != group_v:
+                    samples[group_v].append(encoding)
+            
+            else:    
+                samples.append(encoding)
+       
+        if is_multi:
+            return {group: np.array(encodings) for group, encodings in samples.items()}
         
-        return np.array(samples)
-               
+        else: 
+            return np.array(samples)
         
     def analyze_graph(self):
         
@@ -150,8 +161,10 @@ class GraphAnalyzer:
         num_samples = len(self.pred_G.edges())
         sample_times = self.config['graph_analysis']['sample_times']        
         
-        samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_AD_weight)
-        samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_AD_weight)
+        is_multi = self.config['is_multi']
+        
+        samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_AD_weight , is_multi = is_multi)
+        samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_AD_weight , is_multi = is_multi)
         
         print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
 
