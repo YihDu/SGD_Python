@@ -155,7 +155,7 @@ class GraphAnalyzer:
         
         print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
 
-        samples_set_truth = self.fit_kde_and_sample(samples_truth, num_samples , sample_times , bandwidth=0.4, random_seed=42)
-        samples_set_pred = self.fit_kde_and_sample(samples_pred, num_samples , sample_times , bandwidth=0.4, random_seed=42)
+        samples_set_truth = self.fit_kde_and_sample(samples_truth, num_samples , sample_times , bandwidth=0.1, random_seed=42)
+        samples_set_pred = self.fit_kde_and_sample(samples_pred, num_samples , sample_times , bandwidth=0.1, random_seed=42)
         
         return samples_set_truth , samples_set_pred
