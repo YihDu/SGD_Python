@@ -31,7 +31,7 @@ class GraphBuilder:
                 graph.add_edge(i , n)
         return graph
 
-    ## To do : calculate Gene Similarity with 2 vector 
+    ## calculate Gene Similarity with 2 vector 
     def calculate_gene_similarity(self, graph, gene_expression_data):
         expression_matrix = gene_expression_data.iloc[:, 1:].values.astype(float)
         
@@ -42,15 +42,23 @@ class GraphBuilder:
         
         nodes = list(graph.nodes())
         if len(nodes) != pearson_matrix.shape[0]:
-            raise ValueError("节点数与基因表达数据的大小不匹配")
+            raise ValueError("The number of nodes ")
         
         for u, v in graph.edges():
-            if u < len(nodes) and v < len(nodes):
-                graph.edges[u, v]['gene_similarity_weight'] = 1 - pearson_matrix[u, v]
+            
+            group_u = graph.nodes[u]['group']
+            group_v = graph.nodes[v]['group'] 
+            
+            # same group use similarity
+            if group_u == group_v:
+                graph.edges[u, v]['gene_similarity_weight'] = pearson_matrix[u, v]
+           
+            # different group use distance 
             else:
-                raise IndexError(f"节点索引超出范围：u={u}, v={v}, 矩阵大小={pearson_matrix.shape}")
+                graph.edges[u, v]['gene_similarity_weight'] = 1 - pearson_matrix[u, v]
+            
         
-    # To do (a hyperparameter)
+    # a hyperparameter
     def calculate_AD_weight(self , graph):
         for edge in graph.edges():
             u , v = edge
@@ -81,7 +89,6 @@ class GraphBuilder:
         if self.config['graph_builder']['apply_gene_similarity']:
             gene_expression_data = self.load_data(self.config['graph_builder']['gene_expression_file_path'])
             self.calculate_gene_similarity(self.truth_G, gene_expression_data)
-            self.calculate_gene_similarity(self.pred_G, gene_expression_data)
         
         if self.config['graph_builder']['apply_AD_weight']:
             self.calculate_AD_weight(self.truth_G)

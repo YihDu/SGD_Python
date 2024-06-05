@@ -112,8 +112,6 @@ class GraphAnalyzer:
         print("Unique groups:", unique_groups)
         group_to_onehot = {group: np.array([1 if i == group else 0 for i in unique_groups], dtype=np.float64) for group in unique_groups}
         
-        
-        
         if is_multi:
             samples = {group : [] for group in unique_groups}
         
@@ -132,7 +130,7 @@ class GraphAnalyzer:
             if apply_gene_similarity:
                 gene_similarity_weight = graph[u][v].get('gene_similarity_weight', 1.0)
                 encoding *= gene_similarity_weight
-
+                    
             if apply_AD_weight:
                 ad_weight = graph[u][v].get('ad_weight', 1.0)
                 encoding *= ad_weight
