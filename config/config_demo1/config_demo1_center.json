@@ -1,5 +1,5 @@
 {   
-    "is_subtyping" : false,
+    "is_multi" : false,
 
     "graph_builder" :{
         "apply_gene_similarity" : false,

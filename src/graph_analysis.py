@@ -36,7 +36,7 @@ class GraphAnalyzer:
         sample_end_time = time.time()
         print(f"Sampling took {sample_end_time - sample_start_time:.2f} seconds.")
     
-        # self.plot_marginal_distributions(samples, samples_set)
+        self.plot_marginal_distributions(samples, samples_set)
         
         return samples_set
     

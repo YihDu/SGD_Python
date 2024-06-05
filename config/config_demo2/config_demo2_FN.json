@@ -1,5 +1,5 @@
 {   
-    "is_subtyping" : false,
+    "is_multi" : false,
 
     "graph_builder" :{
         "apply_gene_similarity" : false,
@@ -12,7 +12,7 @@
 },
 
     "graph_analysis" :{
-        "sample_times" : 20
+        "sample_times" : 4
     },
 
     "kernel_parameters":{
