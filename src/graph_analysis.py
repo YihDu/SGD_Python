@@ -47,7 +47,7 @@ class GraphAnalyzer:
         for i in range(num_dimensions):
             # original
             ax_kde = axes[i, 0] if num_dimensions > 1 else axes[0]
-            sns.histplot(original_samples[:, i], bins=30, kde=False, label='Original Histogram', color='blue', alpha=0.5, ax=ax_kde)
+            # sns.histplot(original_samples[:, i], bins=30, kde=False, label='Original Histogram', color='blue', alpha=0.5, ax=ax_kde)
             sns.kdeplot(original_samples[:, i], fill=True, label='Original KDE', color='blue', ax=ax_kde)
             ax_kde.set_title(f'KDE and Histogram of Dimension {i+1}')
             ax_kde.set_xlabel(f'Dimension {i+1}')
