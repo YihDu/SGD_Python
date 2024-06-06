@@ -39,30 +39,15 @@ def SGD(config_path):
     print(f"Graph Analysis took {time.time() - graph_building_time:.2f} seconds.")
 
     sigma = config['kernel_parameters']['sigma']
-    
-    is_multi = config['is_multi']
 
-    if not is_multi:
-        SGD_score = compute_mmd(sample_sets_truth , 
-                                sample_sets_pred ,
-                                kernel = gaussian_emd, 
-                                sigma = sigma ,
-                                is_hist = True)
-        print("SGD :" , SGD_score)
-        return SGD_score
+    SGD_score = compute_mmd(sample_sets_truth , 
+                            sample_sets_pred ,
+                            kernel = gaussian_emd, 
+                            sigma = sigma ,
+                            is_hist = True)
+    print("SGD :" , SGD_score)
+    return SGD_score
     
-    else:
-        SGD_scores = {}
-        for group in sample_sets_truth.keys():
-            SGD_scores[group] = compute_mmd(sample_sets_truth[group] , 
-                                sample_sets_pred[group] ,
-                                kernel = gaussian_emd, 
-                                sigma = sigma ,
-                                is_hist = True)
-        
-        for group, score in SGD_scores.items():
-            print(f"SGD for group {group} :", score)
-        return SGD_scores
  
 
 if __name__ == "__main__":

@@ -112,11 +112,7 @@ class GraphAnalyzer:
         print("Unique groups:", unique_groups)
         group_to_onehot = {group: np.array([1 if i == group else 0 for i in unique_groups], dtype=np.float64) for group in unique_groups}
         
-        if is_multi:
-            samples = {group : [] for group in unique_groups}
-        
-        else:
-            samples = []
+        samples = []
         
         for u, v in graph.edges():
             group_u = graph.nodes[u]['group']
@@ -135,18 +131,9 @@ class GraphAnalyzer:
                 ad_weight = graph[u][v].get('ad_weight', 1.0)
                 encoding *= ad_weight
             
-            if is_multi:
-                samples[group_u].append(encoding)
-                if group_u != group_v:
-                    samples[group_v].append(encoding)
-            
-            else:    
-                samples.append(encoding)
+            samples.append(encoding)
        
-        if is_multi:
-            return {group: np.array(encodings) for group, encodings in samples.items()}
-        
-        else: 
+
             return np.array(samples)
         
     def analyze_graph(self):
