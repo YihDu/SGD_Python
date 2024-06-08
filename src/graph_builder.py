@@ -1,16 +1,26 @@
 import networkx as nx
 import pandas as pd
 import numpy as np
+import anndata as ad
 from sklearn.neighbors import NearestNeighbors
+
+class DataHandler:
+    def __init__(self,file_path):
+        self.file_path = file_path
+        self.adata = None
+
+    def load_data(self):
+        if self.adata is None:
+            self.adata = ad.read_h5ad(self.file_path)
+        return self.adata
 
 class GraphBuilder:
     def __init__(self , config):
         self.config = config
+        self.data_handler = DataHandler(self.config['data_path'])
         self.truth_G = nx.Graph()
         self.pred_G = nx.Graph()
-        
-    def load_data(self , file_path):
-        return pd.read_csv(file_path)
+
     
     def build_graph(self , coordinate_data):
         graph = nx.Graph()
@@ -32,11 +42,11 @@ class GraphBuilder:
         return graph
 
     ## calculate Gene Similarity with 2 vector 
-    def calculate_gene_similarity(self, graph, gene_expression_data):
-        expression_matrix = gene_expression_data.iloc[:, 1:].values.astype(float)
+    def calculate_gene_similarity(self, graph, gene_expression_matrix):
+        # expression_matrix = gene_expression_data.iloc[:, 1:].values.astype(float)
         
-        normalized_data = (expression_matrix - np.mean(expression_matrix, axis=1, keepdims=True)) / \
-                        np.std(expression_matrix, axis=1, keepdims=True)
+        normalized_data = (gene_expression_matrix - np.mean(gene_expression_matrix, axis=1, keepdims=True)) / \
+                        np.std(gene_expression_matrix, axis=1, keepdims=True)
         
         pearson_matrix = np.corrcoef(normalized_data)
         
@@ -80,20 +90,21 @@ class GraphBuilder:
         
         
     def process_graph(self):
-        truth_data = self.load_data(self.config['graph_builder']['truth_file_path'])
-        pred_data = self.load_data(self.config['graph_builder']['pred_file_path'])
+        adata = self.data_handler.load_data()
         
-        self.truth_G = self.build_graph(truth_data)
-        self.pred_G = self.build_graph(pred_data)
+        truth_label = adata.obs[self.config['cell_type_column_name']]
+        cluster_label = adata.obs[self.config['cluster_column_name']]
+        gene_expression_matrix = adata.X
         
-        if self.config['graph_builder']['apply_gene_similarity']:
-            gene_expression_data = self.load_data(self.config['graph_builder']['gene_expression_file_path'])
-            self.calculate_gene_similarity(self.truth_G, gene_expression_data)
+        self.truth_G = self.build_graph(truth_label)
+        self.pred_G = self.build_graph(cluster_label)
+        
+        if self.config['graph_builder']['apply_gene_similarity']:      
+            self.calculate_gene_similarity(self.truth_G, gene_expression_matrix)
         
         if self.config['graph_builder']['apply_AD_weight']:
             self.calculate_AD_weight(self.truth_G)
         
-            
         self.copy_weights(self.truth_G, self.pred_G) 
     
         return self.truth_G , self.pred_G

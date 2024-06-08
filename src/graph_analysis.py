@@ -146,10 +146,8 @@ class GraphAnalyzer:
         num_samples = len(self.pred_G.edges())
         sample_times = self.config['graph_analysis']['sample_times']        
         
-        is_multi = self.config['is_multi']
-        
-        samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_AD_weight , is_multi = is_multi)
-        samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_AD_weight , is_multi = is_multi)
+        samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_AD_weight)
+        samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_AD_weight)
         
         print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
 

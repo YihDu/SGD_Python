@@ -1,14 +1,12 @@
 {   
-    "is_multi" : false,
-
     "graph_builder" :
     {
         "apply_gene_similarity" : false,
         "apply_AD_weight" : false ,
         "gene_vector_is_preprocessed" : false,
-        "truth_file_path" : "demo/simulation/data/simulate/Case1 (center_edge)/center_edge(0331)/truth_SpatialData.csv",
-        "pred_file_path" : "demo/simulation/data/simulate/Case1 (center_edge)/center_edge(0331)/center_SpatialData.csv",
-        "gene_expression_file_path" : "", 
+        "data_path" : "demo/data/demo1(EdgeError_vs_CenterError).h5ad",
+        "cell_type_column_name" : "cell_type",
+        "cluster_column_name" : "cluster_label",
         "num_neighbors" : 6,
         "AD_weight" : 0.7
 },
