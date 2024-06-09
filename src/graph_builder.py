@@ -78,7 +78,6 @@ class GraphBuilder:
            
             else:
                 graph.edges[u, v]['ad_weight'] = 1
-     
     
     def copy_weights(self, truth_graph, pred_graph):
         for u, v in truth_graph.edges():
@@ -88,7 +87,6 @@ class GraphBuilder:
                 if 'ad_weight' in truth_graph[u][v]:
                     pred_graph[u][v]['ad_weight'] = truth_graph[u][v]['ad_weight']
         
-        
     def process_graph(self):
         adata = self.data_handler.load_data()
         
@@ -96,7 +94,7 @@ class GraphBuilder:
             'x' : adata.obsm['spatial'][: , 0],
             'y' : adata.obsm['spatial'][: , 1]
         })
-
+        
         truth_label = adata.obs[self.config['graph_builder']['cell_type_column_name']]
         cluster_label = adata.obs[self.config['graph_builder']['cluster_column_name']]
         
