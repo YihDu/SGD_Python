@@ -17,17 +17,16 @@ class DataHandler:
 class GraphBuilder:
     def __init__(self , config):
         self.config = config
-        self.data_handler = DataHandler(self.config['data_path'])
+        self.data_handler = DataHandler(self.config['graph_builder']['data_path'])
         self.truth_G = nx.Graph()
         self.pred_G = nx.Graph()
 
-    
-    def build_graph(self , coordinate_data):
+    def build_graph(self , coordinate_data , label_data):
         graph = nx.Graph()
         pos = {}
-        for idx, row in coordinate_data.iterrows():
-            graph.add_node(idx, group=row['group'])
-            pos[idx] = (row['x'], row['y'])
+        for i, (index, row) in enumerate(coordinate_data.iterrows()):
+            pos[i] = (row['x'], row['y'])  # Store position with node index as key
+            graph.add_node(i, pos=pos[i], group=label_data.iloc[i])
         
         pos_array = np.array(list(pos.values()))
         num_nbrs = self.config['graph_builder']['num_neighbors'] + 1
@@ -92,14 +91,23 @@ class GraphBuilder:
     def process_graph(self):
         adata = self.data_handler.load_data()
         
-        truth_label = adata.obs[self.config['cell_type_column_name']]
-        cluster_label = adata.obs[self.config['cluster_column_name']]
-        gene_expression_matrix = adata.X
+        coordinate_data  = pd.DataFrame({
+            'x' : adata.obsm['spatial'][: , 0],
+            'y' : adata.obsm['spatial'][: , 1]
+        })
+        print('坐标信息:',coordinate_data)
+
+        truth_label = adata.obs[self.config['graph_builder']['cell_type_column_name']]
+        cluster_label = adata.obs[self.config['graph_builder']['cluster_column_name']]
         
-        self.truth_G = self.build_graph(truth_label)
-        self.pred_G = self.build_graph(cluster_label)
+        print('真实标签：', truth_label)
+        print('聚类标签：', cluster_label)
         
-        if self.config['graph_builder']['apply_gene_similarity']:      
+        self.truth_G = self.build_graph(coordinate_data , truth_label)
+        self.pred_G = self.build_graph(coordinate_data , cluster_label)
+        
+        if self.config['graph_builder']['apply_gene_similarity']:     
+            gene_expression_matrix = adata.X 
             self.calculate_gene_similarity(self.truth_G, gene_expression_matrix)
         
         if self.config['graph_builder']['apply_AD_weight']:

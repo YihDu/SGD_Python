@@ -4,9 +4,9 @@
         "apply_gene_similarity" : false,
         "apply_AD_weight" : false ,
         "gene_vector_is_preprocessed" : false,
-        "data_path" : "demo/data/demo1(EdgeError_vs_CenterError).h5ad",
+        "data_path" : "demo/data/demo1.h5ad",
         "cell_type_column_name" : "cell_type",
-        "cluster_column_name" : "cluster_label",
+        "cluster_column_name" : "cluster_label_CenterError",
         "num_neighbors" : 6,
         "AD_weight" : 0.7
 },

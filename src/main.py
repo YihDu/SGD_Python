@@ -7,6 +7,8 @@ from GK_emd import gaussian_emd
 from graph_analysis import GraphAnalyzer
 import clustering_metrics
 
+import networkx as nx
+
 def load_config(config_path):
     with open(config_path, 'r') as file:
         config = json.load(file)
@@ -21,7 +23,7 @@ def SGD(config_path):
     graph_builder = GraphBuilder(config)
 
     truth_graph , pred_graph = graph_builder.process_graph()
-     
+
     graph_building_time = time.time()
     
     print(f"Graph Building took {graph_building_time - start_time:.2f} seconds.")
@@ -48,8 +50,6 @@ def SGD(config_path):
     print("SGD :" , SGD_score)
     return SGD_score
     
- 
-
 if __name__ == "__main__":
     config_path = sys.argv[1] if len(sys.argv) > 1 else 'config.json'
     SGD(config_path)

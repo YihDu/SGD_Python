@@ -3,17 +3,19 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score, silhouette_score, fowlkes_mallows_score, jaccard_score
 from scipy.spatial import distance_matrix
+import scanpy as sc
+
+def load_adata(data_path):
+    adata = sc.read_h5ad(data_path)
+    return adata
 
 def compute_clustering_metrics(config):
-    truth_file_path = config['graph_builder']['truth_file_path']
-    pred_file_path = config['graph_builder']['pred_file_path']
+
+    adata = load_adata(config['graph_builder']['data_path'])
     
-    truth_data = pd.read_csv(truth_file_path)
-    pred_data = pd.read_csv(pred_file_path)
-    
-    truth_labels = truth_data['group']
-    cluster_labels = pred_data['group']
-    coords = truth_data[['x', 'y']].values
+    truth_labels = adata.obs[config['graph_builder']['cell_type_column_name']]
+    cluster_labels = adata.obs[config['graph_builder']['cluster_column_name']]
+    coords = adata.obsm['spatial']
     
     # External evaluation measures
     ari = adjusted_rand_score(truth_labels, cluster_labels)

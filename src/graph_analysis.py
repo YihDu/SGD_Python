@@ -13,7 +13,7 @@ class GraphAnalyzer:
         self.truth_G = truth_G
         self.pred_G = pred_G
     
-    def fit_kde_and_sample(self, samples, num_samples , sample_times , bandwidth=0.2, random_seed=42):
+    def fit_kde_and_sample(self, samples, num_samples , sample_times , bandwidth=0.1, random_seed=42):
         
         fit_start_time = time.time()
         
@@ -68,46 +68,8 @@ class GraphAnalyzer:
         
         plt.tight_layout()
         plt.show()
-    '''
-    def sampling_after_kde( self, samples , num_samples , bandwidths = np.linspace(0.1 , 1.0 , 10) , random_seed = 42):
-        np.random.seed(random_seed)
-        
-        total_start_time = time.time()
-        
-        # KDE 拟合开始计时
-        fit_start_time = time.time()
-        
-        kde = KernelDensity(kernel = 'gaussian')
-        
-        params = {'bandwidth': bandwidths}
-        grid = GridSearchCV(kde, params, cv=5)
-        
-        grid.fit(samples)
-
-        # 打印拟合的时间
-        fit_end_time = time.time()
-        print(f"KDE fitting took {fit_end_time - fit_start_time:.2f} seconds.")
-   
-
-        
-        kde = grid.best_estimator_
-        
-        # 抽样开始计时
-        sample_start_time = time.time()
-        sample_sets = kde.sample(num_samples) # random samples
-        
-        sample_end_time = time.time()
-        print(f"Sampling took {sample_end_time - sample_start_time:.2f} seconds.")
-
-        # 打印总时间
-        total_end_time = time.time()
-        print(f"Total process took {total_end_time - total_start_time:.2f} seconds.")
-        
-        return sample_sets
-       '''     
-     
     
-    def get_edge_attributes(self, graph, apply_gene_similarity, apply_AD_weight , is_multi = False):
+    def get_edge_attributes(self, graph, apply_gene_similarity, apply_AD_weight):
         unique_groups = sorted(set(node_data['group'] for _, node_data in graph.nodes(data=True)))
         print("Unique groups:", unique_groups)
         group_to_onehot = {group: np.array([1 if i == group else 0 for i in unique_groups], dtype=np.float64) for group in unique_groups}
@@ -134,11 +96,10 @@ class GraphAnalyzer:
             samples.append(encoding)
        
 
-            return np.array(samples)
+        return np.array(samples)
         
     def analyze_graph(self):
-        
-        graph_building_time = time.time()
+        # graph_building_time = time.time()
         
         apply_gene_similarity = self.config['graph_builder']['apply_gene_similarity']
         apply_AD_weight = self.config['graph_builder']['apply_AD_weight']
@@ -149,7 +110,7 @@ class GraphAnalyzer:
         samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_AD_weight)
         samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_AD_weight)
         
-        print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
+        # print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
 
         samples_set_truth = self.fit_kde_and_sample(samples_truth, num_samples , sample_times , bandwidth=0.1, random_seed=42)
         samples_set_pred = self.fit_kde_and_sample(samples_pred, num_samples , sample_times , bandwidth=0.1, random_seed=42)
