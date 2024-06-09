@@ -1,6 +1,4 @@
 import numpy as np
-import torch
-import ot
 import time
 from concurrent.futures import ProcessPoolExecutor
 from GK_emd import *
@@ -34,7 +32,6 @@ def disc(samples1 , samples2 , kernel , sigma , max_workers=3):
             results.append(kernel_task(task))
     
     
-    # 打印出result的每一个元素
     print(results)
     
     d = sum(results) / (n * m)

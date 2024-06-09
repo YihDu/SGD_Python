@@ -43,13 +43,8 @@ class GraphBuilder:
 
     ## calculate Gene Similarity with 2 vector 
     def calculate_gene_similarity(self, graph, gene_expression_matrix):
-        # expression_matrix = gene_expression_data.iloc[:, 1:].values.astype(float)
-        
-        # normalized_data = (gene_expression_matrix - np.mean(gene_expression_matrix, axis=1, keepdims=True)) / \
-        #                 np.std(gene_expression_matrix, axis=1, keepdims=True)
-        if isspmatrix(gene_expression_matrix):  # 检查是否为稀疏矩阵
-           gene_expression_matrix = gene_expression_matrix.toarray()  # 转换为密集格式
-            
+        if isspmatrix(gene_expression_matrix): 
+           gene_expression_matrix = gene_expression_matrix.toarray()
         pearson_matrix = np.corrcoef(gene_expression_matrix)
         
         nodes = list(graph.nodes())
@@ -84,16 +79,6 @@ class GraphBuilder:
             else:
                 graph.edges[u, v]['ad_weight'] = 1
      
-        '''
-        for edge in graph.edges():
-            u , v = edge
-            if graph.nodes[u]['group'] == 'Anomaly' and graph.nodes[v]['group'] == 'Anomaly':
-                graph[u][v]['ad_weight'] = 0.7
-            elif graph.nodes[u]['group'] == 'Normal' and graph.nodes[v]['group'] == 'Normal':
-                graph[u][v]['ad_weight'] = 0.4
-            else:
-                graph[u][v]['ad_weight'] = 1
-        '''
     
     def copy_weights(self, truth_graph, pred_graph):
         for u, v in truth_graph.edges():
@@ -111,13 +96,9 @@ class GraphBuilder:
             'x' : adata.obsm['spatial'][: , 0],
             'y' : adata.obsm['spatial'][: , 1]
         })
-        print('坐标信息:',coordinate_data)
 
         truth_label = adata.obs[self.config['graph_builder']['cell_type_column_name']]
         cluster_label = adata.obs[self.config['graph_builder']['cluster_column_name']]
-        
-        print('真实标签：', truth_label)
-        print('聚类标签：', cluster_label)
         
         self.truth_G = self.build_graph(coordinate_data , truth_label)
         self.pred_G = self.build_graph(coordinate_data , cluster_label)

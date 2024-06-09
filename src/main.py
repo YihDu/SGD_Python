@@ -7,8 +7,6 @@ from GK_emd import gaussian_emd
 from graph_analysis import GraphAnalyzer
 import clustering_metrics
 
-import networkx as nx
-
 def load_config(config_path):
     with open(config_path, 'r') as file:
         config = json.load(file)
