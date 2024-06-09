@@ -1,0 +1,24 @@
+{   
+    "graph_builder" :{
+        "apply_gene_similarity" : false,
+        "apply_AD_weight" : true ,
+        "data_path" : "demo/data/demo2.1.h5ad",
+        "cell_type_column_name" : "cell_type",
+        "cluster_column_name" : "cluster_label_error_cancer_situ",
+        "num_neighbors" : 6,
+
+        "severity_levels":[
+            {"name" : "normal" , "severity_level" : 0},
+            {"name" : "cancer in situ" , "severity_level" : 2},
+            {"name" : "invasive cancer" , "severity_level" : 4}]
+},
+
+    "graph_analysis" :{
+        "sample_times" : 4
+    },
+
+    "kernel_parameters":{
+        "sigma" : 1e-4
+    }
+
+}

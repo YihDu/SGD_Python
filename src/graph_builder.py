@@ -71,16 +71,29 @@ class GraphBuilder:
             
         
     # a hyperparameter
-    def calculate_AD_weight(self , graph):
+    def calculate_AD_weight(self , graph , dict_severity_levels):
+        severity_mapping = {category['name']: category['severity_level'] for category in dict_severity_levels}
+        
+        for u ,v in graph.edges():
+            group_u = graph.nodes[u]['group']
+            group_v = graph.nodes[v]['group']
+            
+            if group_u == group_v:
+                graph.edges[u, v]['ad_weight'] = 0.5 + 0.1 * severity_mapping[group_u]
+           
+            else:
+                graph.edges[u, v]['ad_weight'] = 1
+     
+        '''
         for edge in graph.edges():
             u , v = edge
-            if graph.nodes[u]['group'] == 'A' and graph.nodes[v]['group'] == 'A':
+            if graph.nodes[u]['group'] == 'Anomaly' and graph.nodes[v]['group'] == 'Anomaly':
                 graph[u][v]['ad_weight'] = 0.7
             elif graph.nodes[u]['group'] == 'Normal' and graph.nodes[v]['group'] == 'Normal':
                 graph[u][v]['ad_weight'] = 0.4
             else:
                 graph[u][v]['ad_weight'] = 1
-
+        '''
     
     def copy_weights(self, truth_graph, pred_graph):
         for u, v in truth_graph.edges():
@@ -114,7 +127,7 @@ class GraphBuilder:
             self.calculate_gene_similarity(self.truth_G, gene_expression_matrix)
         
         if self.config['graph_builder']['apply_AD_weight']:
-            self.calculate_AD_weight(self.truth_G)
+            self.calculate_AD_weight(self.truth_G , self.config['graph_builder']['severity_levels'])
         
         self.copy_weights(self.truth_G, self.pred_G) 
     
