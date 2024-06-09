@@ -1,0 +1,24 @@
+{   
+    "graph_builder" :
+    {
+        "apply_gene_similarity" : false,
+        "apply_AD_weight" : false ,
+        "gene_vector_is_preprocessed" : false,
+        "data_path" : "demo/data/demo1.h5ad",
+        "cell_type_column_name" : "cell_type",
+        "cluster_column_name" : "cluster_label_CenterError",
+        "num_neighbors" : 6,
+        "AD_weight" : 0.7
+},
+
+    "graph_analysis" :
+    {
+        "sample_times" : 10
+    },
+
+    "kernel_parameters":
+    {
+        "sigma" : 1e-3
+    }
+
+}

@@ -4,6 +4,7 @@ import numpy as np
 import anndata as ad
 from sklearn.neighbors import NearestNeighbors
 
+from scipy.sparse import isspmatrix, csr_matrix 
 class DataHandler:
     def __init__(self,file_path):
         self.file_path = file_path
@@ -44,10 +45,12 @@ class GraphBuilder:
     def calculate_gene_similarity(self, graph, gene_expression_matrix):
         # expression_matrix = gene_expression_data.iloc[:, 1:].values.astype(float)
         
-        normalized_data = (gene_expression_matrix - np.mean(gene_expression_matrix, axis=1, keepdims=True)) / \
-                        np.std(gene_expression_matrix, axis=1, keepdims=True)
-        
-        pearson_matrix = np.corrcoef(normalized_data)
+        # normalized_data = (gene_expression_matrix - np.mean(gene_expression_matrix, axis=1, keepdims=True)) / \
+        #                 np.std(gene_expression_matrix, axis=1, keepdims=True)
+        if isspmatrix(gene_expression_matrix):  # 检查是否为稀疏矩阵
+           gene_expression_matrix = gene_expression_matrix.toarray()  # 转换为密集格式
+            
+        pearson_matrix = np.corrcoef(gene_expression_matrix)
         
         nodes = list(graph.nodes())
         if len(nodes) != pearson_matrix.shape[0]:

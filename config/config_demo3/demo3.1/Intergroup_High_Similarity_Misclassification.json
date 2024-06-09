@@ -1,0 +1,22 @@
+{   
+    "is_multi" : false,
+
+    "graph_builder" :{
+        "apply_gene_similarity" : true,
+        "apply_AD_weight" : false ,
+        "data_path" : "demo/data/demo3.1.h5ad",
+        "cell_type_column_name" : "Cluster",
+        "cluster_column_name" : "sim",
+        "num_neighbors" : 6,
+        "AD_weight" : 0.7
+},
+
+    "graph_analysis" :{
+        "sample_times" : 2
+    },
+
+    "kernel_parameters":{
+        "sigma" : 1e-5
+    }
+
+}
