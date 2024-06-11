@@ -1,9 +1,7 @@
 {   
-    "is_multi" : false,
-
     "graph_builder" :{
         "apply_gene_similarity" : true,
-        "apply_AD_weight" : false ,
+        "apply_anomaly_severity_weight" : false ,
         "data_path" : "demo/data/demo3.1.h5ad",
         "cell_type_column_name" : "Cluster",
         "cluster_column_name" : "sim",

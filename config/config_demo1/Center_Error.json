@@ -2,7 +2,7 @@
     "graph_builder" :
     {
         "apply_gene_similarity" : false,
-        "apply_AD_weight" : false ,
+        "apply_anomaly_severity_weight" : false ,
         "gene_vector_is_preprocessed" : false,
         "data_path" : "demo/data/demo1.h5ad",
         "cell_type_column_name" : "cell_type",

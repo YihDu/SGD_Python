@@ -69,7 +69,7 @@ class GraphAnalyzer:
         plt.tight_layout()
         plt.show()
     
-    def get_edge_attributes(self, graph, apply_gene_similarity, apply_AD_weight):
+    def get_edge_attributes(self, graph, apply_gene_similarity, apply_anomaly_severity_weight):
         unique_groups = sorted(set(node_data['group'] for _, node_data in graph.nodes(data=True)))
         print("Unique groups:", unique_groups)
         group_to_onehot = {group: np.array([1 if i == group else 0 for i in unique_groups], dtype=np.float64) for group in unique_groups}
@@ -89,8 +89,8 @@ class GraphAnalyzer:
                 gene_similarity_weight = graph[u][v].get('gene_similarity_weight', 1.0)
                 encoding *= gene_similarity_weight
                     
-            if apply_AD_weight:
-                ad_weight = graph[u][v].get('ad_weight', 1.0)
+            if apply_anomaly_severity_weight:
+                ad_weight = graph[u][v].get('anomaly_severity_weight', 1.0)
                 encoding *= ad_weight
             
             samples.append(encoding)
@@ -102,13 +102,13 @@ class GraphAnalyzer:
         # graph_building_time = time.time()
         
         apply_gene_similarity = self.config['graph_builder']['apply_gene_similarity']
-        apply_AD_weight = self.config['graph_builder']['apply_AD_weight']
+        apply_anomaly_severity_weight = self.config['graph_builder']['apply_anomaly_severity_weight']
         
         num_samples = len(self.pred_G.edges())
         sample_times = self.config['graph_analysis']['sample_times']        
         
-        samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_AD_weight)
-        samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_AD_weight)
+        samples_truth = self.get_edge_attributes(self.truth_G, apply_gene_similarity, apply_anomaly_severity_weight)
+        samples_pred = self.get_edge_attributes(self.pred_G, apply_gene_similarity, apply_anomaly_severity_weight)
         
         # print(f"get_edge_attributes took {time.time() - graph_building_time:.2f} seconds.")
 

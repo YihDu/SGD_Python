@@ -66,7 +66,7 @@ class GraphBuilder:
             
         
     # a hyperparameter
-    def calculate_AD_weight(self , graph , dict_severity_levels):
+    def calculate_anomaly_weight(self , graph , dict_severity_levels):
         severity_mapping = {category['name']: category['severity_level'] for category in dict_severity_levels}
         
         for u ,v in graph.edges():
@@ -74,10 +74,10 @@ class GraphBuilder:
             group_v = graph.nodes[v]['group']
             
             if group_u == group_v:
-                graph.edges[u, v]['ad_weight'] = 0.5 + 0.1 * severity_mapping[group_u]
+                graph.edges[u, v]['anomaly_severity_weight'] = 0.5 + 0.1 * severity_mapping[group_u]
            
             else:
-                graph.edges[u, v]['ad_weight'] = 1
+                graph.edges[u, v]['anomaly_severity_weight'] = 1
     
     def copy_weights(self, truth_graph, pred_graph):
         for u, v in truth_graph.edges():
@@ -85,7 +85,7 @@ class GraphBuilder:
                 if 'gene_similarity_weight' in truth_graph[u][v]:
                     pred_graph[u][v]['gene_similarity_weight'] = truth_graph[u][v]['gene_similarity_weight']
                 if 'ad_weight' in truth_graph[u][v]:
-                    pred_graph[u][v]['ad_weight'] = truth_graph[u][v]['ad_weight']
+                    pred_graph[u][v]['anomaly_severity_weight'] = truth_graph[u][v]['anomaly_severity_weight']
         
     def process_graph(self):
         adata = self.data_handler.load_data()
@@ -105,8 +105,8 @@ class GraphBuilder:
             gene_expression_matrix = adata.X 
             self.calculate_gene_similarity(self.truth_G, gene_expression_matrix)
         
-        if self.config['graph_builder']['apply_AD_weight']:
-            self.calculate_AD_weight(self.truth_G , self.config['graph_builder']['severity_levels'])
+        if self.config['graph_builder']['apply_anomaly_severity_weight']:
+            self.calculate_anomaly_weight(self.truth_G , self.config['graph_builder']['severity_levels'])
         
         self.copy_weights(self.truth_G, self.pred_G) 
     

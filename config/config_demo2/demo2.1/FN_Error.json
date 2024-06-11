@@ -1,7 +1,7 @@
 {   
     "graph_builder" :{
         "apply_gene_similarity" : false,
-        "apply_AD_weight" : true ,
+        "apply_anomaly_severity_weight" : true ,
         "data_path" : "demo/data/demo2.1.h5ad",
         "cell_type_column_name" : "cell_type",
         "cluster_column_name" : "cluster_label_FN",

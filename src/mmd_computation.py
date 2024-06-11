@@ -58,8 +58,7 @@ if __name__ == "__main__":
     array2 = np.random.rand(10, 11000, 7)
     
     sigma = 1e-4
-    
-    # 计算MMD
+
     mmd1 = compute_mmd(array1, array2, gaussian_emd, sigma)
     # mmd2 = compute_mmd(array1, array2, gaussian_emd_Sinkhorn, sigma)
     print(f"MMD using kernel1: {mmd1}")
