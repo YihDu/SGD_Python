@@ -3,8 +3,16 @@ import pandas as pd
 import numpy as np
 import anndata as ad
 from sklearn.neighbors import NearestNeighbors
+import scanpy as sc
+from scipy.sparse import isspmatrix
 
-from scipy.sparse import isspmatrix, csr_matrix 
+def preprocess_anndata(adata):
+    adata.layers["counts"] = adata.X.copy()
+    sc.pp.normalize_total(adata)
+    sc.pp.log1p(adata)
+    sc.pp.highly_variable_genes(adata , n_top_genes = 3000)
+    return adata
+
 class DataHandler:
     def __init__(self,file_path):
         self.file_path = file_path
@@ -42,9 +50,15 @@ class GraphBuilder:
         return graph
 
     ## calculate Gene Similarity with 2 vector 
-    def calculate_gene_similarity(self, graph, gene_expression_matrix):
-        if isspmatrix(gene_expression_matrix): 
-           gene_expression_matrix = gene_expression_matrix.toarray()
+    def calculate_gene_similarity(self, graph, anndata , preprocessed = True):
+        
+        if not preprocessed:
+            preprocessed_data = preprocess_anndata(anndata)
+            gene_expression_matrix = preprocessed_data[:, preprocessed_data.var['highly_variable']].X
+        
+        if isspmatrix(gene_expression_matrix):
+            gene_expression_matrix = gene_expression_matrix.toarray()
+        
         pearson_matrix = np.corrcoef(gene_expression_matrix)
         
         nodes = list(graph.nodes())
@@ -64,8 +78,6 @@ class GraphBuilder:
             else:
                 graph.edges[u, v]['gene_similarity_weight'] = 1 - pearson_matrix[u, v]
             
-        
-    # a hyperparameter
     def calculate_anomaly_weight(self , graph , dict_severity_levels):
         severity_mapping = {category['name']: category['severity_level'] for category in dict_severity_levels}
         
@@ -102,12 +114,10 @@ class GraphBuilder:
         self.pred_G = self.build_graph(coordinate_data , cluster_label)
         
         if self.config['graph_builder']['apply_gene_similarity']:     
-            gene_expression_matrix = adata.X 
-            self.calculate_gene_similarity(self.truth_G, gene_expression_matrix)
-        
+            self.calculate_gene_similarity(self.truth_G, anndata = adata , preprocessed = True)
         if self.config['graph_builder']['apply_anomaly_severity_weight']:
             self.calculate_anomaly_weight(self.truth_G , self.config['graph_builder']['severity_levels'])
         
         self.copy_weights(self.truth_G, self.pred_G) 
-    
+        
         return self.truth_G , self.pred_G

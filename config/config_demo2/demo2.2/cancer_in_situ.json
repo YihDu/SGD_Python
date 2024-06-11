@@ -3,6 +3,7 @@
         "apply_gene_similarity" : false,
         "apply_anomaly_severity_weight" : true ,
         "data_path" : "demo/data/demo2.2.h5ad",
+        "preprocessed" : true,
         "cell_type_column_name" : "cell_type",
         "cluster_column_name" : "cluster_label_error_cancer_situ",
         "num_neighbors" : 6,
