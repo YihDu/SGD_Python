@@ -1,7 +1,6 @@
 import numpy as np
 import time
 from concurrent.futures import ProcessPoolExecutor
-from GK_emd import *
 import dill as pickle
 from tqdm import tqdm
 
@@ -31,8 +30,7 @@ def disc(samples1 , samples2 , kernel , sigma , max_workers=3):
         for task in tqdm(tasks, total=len(tasks)):
             results.append(kernel_task(task))
     
-    
-    print(results)
+    # print(results)
     
     d = sum(results) / (n * m)
     
@@ -51,15 +49,3 @@ def compute_mmd(samples1, samples2, kernel, sigma ,is_hist=True):
             disc(samples2, samples2, kernel , sigma) - \
             2 * disc(samples1, samples2, kernel , sigma)
             
-
-if __name__ == "__main__":
-    # test data
-    array1 = np.random.rand(10, 11000, 7)
-    array2 = np.random.rand(10, 11000, 7)
-    
-    sigma = 1e-4
-
-    mmd1 = compute_mmd(array1, array2, gaussian_emd, sigma)
-    # mmd2 = compute_mmd(array1, array2, gaussian_emd_Sinkhorn, sigma)
-    print(f"MMD using kernel1: {mmd1}")
-    # print(f"MMD using kernel2: {mmd2}")

@@ -1,11 +1,9 @@
-import networkx as nx
 import numpy as np
 from sklearn.neighbors import KernelDensity
 from sklearn.model_selection import GridSearchCV
 import time
 import matplotlib.pyplot as plt
 import seaborn as sns
-import pandas as pd
 
 class GraphAnalyzer:
     def __init__(self , config , truth_G , pred_G):
@@ -36,7 +34,7 @@ class GraphAnalyzer:
         sample_end_time = time.time()
         print(f"Sampling took {sample_end_time - sample_start_time:.2f} seconds.")
     
-        self.plot_marginal_distributions(samples, samples_set)
+        # self.plot_marginal_distributions(samples, samples_set)
         
         return samples_set
     
@@ -71,7 +69,8 @@ class GraphAnalyzer:
     
     def get_edge_attributes(self, graph, apply_gene_similarity, apply_anomaly_severity_weight):
         unique_groups = sorted(set(node_data['group'] for _, node_data in graph.nodes(data=True)))
-        print("Unique groups:", unique_groups)
+        # print("Unique groups:", unique_groups)
+        # print('---------------------------------------------------')
         group_to_onehot = {group: np.array([1 if i == group else 0 for i in unique_groups], dtype=np.float64) for group in unique_groups}
         
         samples = []

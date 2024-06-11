@@ -1,7 +1,7 @@
 import numpy as np
 import ot
 import torch
-import sinkhorn_pointcloud as spc
+# import sinkhorn_pointcloud as spc
 import time
 
 ## POT - Wasserstein Distance

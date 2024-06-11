@@ -38,8 +38,12 @@ def compute_clustering_metrics(config):
             'PAS' : PAS
         }
     
-    metrics_df = pd.DataFrame(metrics_data , index=[1])
+    metrics_df = pd.DataFrame(metrics_data , index=[0])
     
+    metrics_df = metrics_df.T
+    metrics_df.columns = ['Value']
+    
+    print('Clustering Evaluation Metrics:')
     print(metrics_df)
     
     return metrics_df
