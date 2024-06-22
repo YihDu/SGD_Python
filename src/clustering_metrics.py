@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score, silhouette_score, fowlkes_mallows_score, jaccard_score
+from sklearn.metrics import (
+    adjusted_rand_score, normalized_mutual_info_score, jaccard_score, fowlkes_mallows_score,
+    silhouette_score, davies_bouldin_score, v_measure_score, calinski_harabasz_score
+)
 from scipy.spatial import distance_matrix
 import scanpy as sc
 
@@ -22,20 +25,27 @@ def compute_clustering_metrics(config):
     nmi = normalized_mutual_info_score(truth_labels, cluster_labels)
     jaccard = jaccard_score(truth_labels, cluster_labels, average='macro')
     fmi = fowlkes_mallows_score(truth_labels, cluster_labels)
+    v_measure = v_measure_score(truth_labels, cluster_labels)
     
     # Internal evaluation measures    
     silhouette = silhouette_score(coords, cluster_labels)
     chaos = compute_CHAOS(cluster_labels, coords)
     PAS = compute_PAS(cluster_labels, coords)
+    db_index = davies_bouldin_score(coords, cluster_labels)
+    ch_index = calinski_harabasz_score(coords, cluster_labels)
+    
     
     metrics_data = {
             'Adjusted Rand Index (ARI)': ari,
             'Normalized Mutual Information (NMI)': nmi,
             'Jaccard Index': jaccard,
             'Fowlkes-Mallows Index (FMI)': fmi,
+            'V-Measure': v_measure,
             'Silhouette Coefficient': silhouette,
             'CHAOS': chaos,
-            'PAS' : PAS
+            'PAS' : PAS,
+            'Davies-Bouldin Index': db_index,
+            'Calinski-Harabasz Index': ch_index
         }
     
     metrics_df = pd.DataFrame(metrics_data , index=[0])
